@@ -5,6 +5,7 @@ import { Realm } from 'src/app/model/Realm';
 import { Region } from 'src/app/model/Region';
 import { RIO } from 'src/app/model/RIO';
 import { WLOGS } from 'src/app/model/WLOGS';
+import { ParserService } from 'src/app/services/parser.service';
 import { RIOService } from 'src/app/services/rio.service';
 import { WLogsService } from 'src/app/services/wlogs.service';
 
@@ -16,8 +17,12 @@ import { WLogsService } from 'src/app/services/wlogs.service';
 export class MainViewComponent implements OnInit {
   public term: string = 'asdasd';
   private players: Player[] = [];
-  constructor(private rio: RIOService, private wlogs: WLogsService, private cd: ChangeDetectorRef) {}
-
+  constructor(
+    private rio: RIOService,
+    private wlogs: WLogsService,
+    private cd: ChangeDetectorRef,
+    private parser: ParserService
+  ) {}
 
   displayedColumns: string[] = ['class', 'name', 'rio'];
 
@@ -27,23 +32,23 @@ export class MainViewComponent implements OnInit {
 
   executeSearch(): void {
     let player: Player = {
-      name: 'markus',
+      name: 'gorthol',
       realm: Realm.THRALL,
       region: Region.EU,
     };
-    /*
-    this.players.forEach(player => {
 
-    })
-    */
-    this.rio.executeSearch(player).subscribe((res: RIO) => {
-      this.rioRes = res;
-      console.log(this.rioRes);
-    });
+    let playerList: Player[] = this.parser.parse(this.term);
 
-    this.wlogs.executeSearch(player).subscribe((res: WLOGS) => {
-      this.wlogsRes = res;
-      console.log(this.wlogsRes);
+    playerList.forEach((player: Player) => {
+      this.rio.executeSearch(player).subscribe((res: RIO) => {
+        this.rioRes = res;
+        console.log(this.rioRes);
+      });
+
+      this.wlogs.executeSearch(player).subscribe((res: WLOGS) => {
+        this.wlogsRes = res;
+        console.log(this.wlogsRes);
+      });
     });
   }
 

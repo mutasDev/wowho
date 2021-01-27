@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  wlogsToken: "43307f30e3e2a9f69985e91b75e4fb3",
+  wlogsToken: "243307f30e3e2a9f69985e91b75e4fb3",
 };
 
 /*
